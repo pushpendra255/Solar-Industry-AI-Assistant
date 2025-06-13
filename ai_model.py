@@ -1,27 +1,31 @@
 
-import openai
+import os
 import base64
 from io import BytesIO
-from dotenv import load_dotenv
-import os
+import google.generativeai as genai
 
-load_dotenv()
-openai.api_key = os.getenv('OPENAI_API_KEY')
+# Directly set your Gemini API key (for testing only – avoid in production)
+genai.configure(api_key="AIzaSyBeoYwJuJSaOGyWbNwzgoGl8rb2OtctSN8")
 
 def call_ai_model(image):
-    buffered = BytesIO()
-    image.save(buffered, format="JPEG")
-    image_bytes = base64.b64encode(buffered.getvalue()).decode('utf-8')
+    # Convert image to base64
+    buffer = BytesIO()
+    image.save(buffer, format="JPEG")
+    image_data = base64.b64encode(buffer.getvalue()).decode("utf-8")
 
-    response = openai.ChatCompletion.create(
-        model="gpt-4-vision-preview",
-        messages=[
-            {"role": "system", "content": "Provide detailed analysis of rooftop solar potential, including recommended panel type, estimated ROI, and possible obstructions."},
-            {"role": "user", "content": [
-                {"type": "image_url", "image_url": {"url": "data:image/jpeg;base64," + image_bytes}}
-            ]}
-        ],
-        max_tokens=500
-    )
+    # Initialize Gemini model
+    model = genai.GenerativeModel('gemini-pro-vision')
 
-    return response.choices[0].message.content
+    # Send image and prompt for solar rooftop analysis
+    response = model.generate_content([
+        {
+            "type": "image",
+            "data": image_data,
+        },
+        {
+            "type": "text",
+            "text": "Analyze this rooftop image and give detailed solar panel installation recommendations, identify shading/obstruction, suggest panel type and ROI estimate.",
+        }
+    ])
+
+    return response.text
