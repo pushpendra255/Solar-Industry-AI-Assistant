@@ -2,24 +2,30 @@ import streamlit as st
 from PIL import Image
 from utils import analyze_image
 
-st.title('Solar Industry AI Assistant')
+st.set_page_config(page_title="Solar AI Assistant", layout="centered")
+st.title("🔆 Solar Industry AI Assistant (Gemini-based)")
 
-uploaded_file = st.file_uploader("Upload Rooftop Satellite Image", type=['png', 'jpg', 'jpeg'])
+# Image upload
+uploaded_file = st.file_uploader("📤 Upload Rooftop Satellite Image", type=['jpg', 'jpeg', 'png'])
 
 if uploaded_file:
-    image = Image.open(uploaded_file)
-    st.image(image, caption="Uploaded Rooftop Image", use_container_width=True)
+    try:
+        image = Image.open(uploaded_file)
+        st.image(image, caption="🖼️ Uploaded Rooftop Image", use_container_width=True)
 
-    with st.spinner('Analyzing image using Gemini...'):
-        try:
-            # Call analysis
-            analysis = analyze_image(image)
+        st.info("⏳ Analyzing... please wait")
+        analysis = analyze_image(image)
 
-            # Show raw result
+        if analysis:
             st.success("✅ Analysis Complete!")
-            st.markdown("**📝 Gemini Output:**")
+            st.markdown("### 📝 Output from Gemini:")
             st.write(analysis)
+        else:
+            st.warning("⚠️ No output received from Gemini API.")
 
-        except Exception as e:
-            st.error("❌ Error occurred during analysis.")
-            st.exception(e)  # This shows full traceback in output
+    except Exception as e:
+        st.error("❌ An error occurred.")
+        st.exception(e)
+
+else:
+    st.caption("Please upload a valid satellite image of a rooftop.")
