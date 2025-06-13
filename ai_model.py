@@ -1,10 +1,10 @@
 def call_ai_model(image):
-    return """
-✅ Rooftop Solar Assessment:
-- Estimated usable area: 110 sq.m
-- Obstructions: Minimal (good exposure)
-- Recommended Panel: Monocrystalline 400W x 10
-- Estimated ROI: 3.5 years
-- Suggested Installation Angle: 30°
-- Output Rating: High
-"""
+    return {
+        "Usable Rooftop Area": "120 sq.m",
+        "Sunlight Exposure": "Excellent (South-facing)",
+        "Obstructions": "Minimal (1 dish antenna detected)",
+        "Recommended Panel Type": "Monocrystalline - 400W x 10",
+        "Estimated Annual Output": "5,000 kWh/year",
+        "Estimated ROI": "3.2 years",
+        "Installation Notes": "Ideal for east-west tilt. Verify structural integrity for load-bearing."
+    }
